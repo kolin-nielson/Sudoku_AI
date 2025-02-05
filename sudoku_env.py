@@ -33,21 +33,26 @@ class SudokuEnv(gym.Env):
         i = cell_index // 9
         j = cell_index % 9
         
-        reward = -0.1
+        reward = -1  # Default penalty
         
         if self.original[i][j] != 0:
-            reward = -1
+            reward = -1  # Penalize modifying fixed cells
         else:
             if self._is_valid_move(i, j, digit):
                 self.board[i][j] = digit
+                # Check if the placed digit matches the solution
+                if digit == self.solution[i][j]:
+                    reward = 1  # Correct digit
+                else:
+                    reward = -1  # Valid but incorrect
                 if self._is_board_full():
                     if self._check_board():
-                        reward = 100
+                        reward = 100  # Correct solution
                     else:
-                        reward = -10
+                        reward = -10  # Incorrect solution
                     self.done = True
             else:
-                reward = -1
+                reward = -1  # Invalid move
         
         return np.array(self.board).flatten(), reward, self.done, {}
     
