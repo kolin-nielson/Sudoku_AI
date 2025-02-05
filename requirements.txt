@@ -1,3 +1,4 @@
-pygame
-tensorflow
+gym
 numpy
+tensorflow
+pygame
